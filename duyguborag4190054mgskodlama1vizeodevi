@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_TAHMIN 6
+#define KELIME_UZUNLUGU 100
+
+void gösterKelime(char kelime[], int tahminEdilen[]);
+int kelimeTahminEt(char kelime[], char tahminEdilen[], int* kalanTahmin);
+int kontrol(char kelime[], char tahmin);
+
+int main() {
+    char kelime[KELIME_UZUNLUGU] = "programlama"; // Tahmin edilecek kelime
+    int tahminEdilen[KELIME_UZUNLUGU] = {0}; // Tahmin edilen harflerin durumu
+    char tahmin;
+    int kalanTahmin = MAX_TAHMIN;
+    int kelimeTamamlandi = 0;
+
+    printf("Adam Asmaca Oyununa Hoş Geldiniz!\n");
+
+    while (kalanTahmin > 0 && !kelimeTamamlandi) {
+        printf("\nKalan Tahmin Hakkı: %d\n", kalanTahmin);
+        gösterKelime(kelime, tahminEdilen);
+        
+        printf("Bir harf tahmin edin: ");
+        scanf(" %c", &tahmin);
+
+        if (kontrol(kelime, tahmin)) {
+            printf("Tebrikler! '%c' harfi kelimede var.\n", tahmin);
+            tahminEdilen[tahmin - 'a'] = 1; // Harfi tahmin edilenler listesine ekle
+        } else {
+            kalanTahmin--;
+            printf("Üzgünüm, '%c' harfi kelimede yok.\n", tahmin);
+        }
+
+        kelimeTamamlandi = 1;
+        for (int i = 0; i < strlen(kelime); i++) {
+            if (kelime[i] != ' ' && tahminEdilen[kelime[i] - 'a'] == 0) {
+                kelimeTamamlandi = 0;
+                break;
+            }
+        }
+    }
+
+    if (kelimeTamamlandi) {
+        printf("\nTebrikler! Kelimeyi doğru tahmin ettiniz: %s\n", kelime);
+    } else {
+        printf("\nMaalesef kaybettiniz! Doğru kelime: %s\n", kelime);
+    }
+
+    return 0;
+}
+
+void gösterKelime(char kelime[], int tahminEdilen[]) {
+    for (int i = 0; i < strlen(kelime); i++) {
+        if (kelime[i] == ' ' || tahminEdilen[kelime[i] - 'a']) {
+            printf("%c ", kelime[i]);
+        } else {
+            printf("_ ");
+        }
+    }
+    printf("\n");
+}
+
+int kontrol(char kelime[], char tahmin) {
+    for (int i = 0; i < strlen(kelime); i++) {
+        if (kelime[i] == tahmin) {
+            return 1; // Harf kelimede var
+        }
+    }
+    return 0; // Harf kelimede yok
+}
